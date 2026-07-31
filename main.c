@@ -95,11 +95,6 @@ void print_regs(cpu_t* cpu) {
     printf("\n");
 }
 
-void print_halt() {
-    printf("[!!] HALT [!!]\n");
-    exit(1);
-}
-
 // UTILS : END
 
 
@@ -267,47 +262,55 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
     if (inst.type == ITYPE_R) {
         if (inst.funct3 == 0b000) {
             if (inst.funct7 == 0b0000000) {
+                // ADD
                 cpu->regs[inst.rd] = cpu->regs[inst.rs1] + cpu->regs[inst.rs2];
                 cpu->pc += 4;
             }
             else if (inst.funct7 = 0b0100000) {
+                // SUB
                 cpu->regs[inst.rd] = cpu->regs[inst.rs1] - cpu->regs[inst.rs2];
                 cpu->pc += 4;
             }
         }
         else if (inst.funct3 == 0b001) {
+            // SLL
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] << cpu->regs[inst.rs2];
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b010) {
-            cpu->regs[inst.rd] = (signed int)cpu->regs[inst.rs1] < (signed int)cpu->regs[inst.rs2];
+            // SLT
+            cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] < (int32_t)cpu->regs[inst.rs2];
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b011) {
-            cpu->regs[inst.rd] = (unsigned int)cpu->regs[inst.rs1] < (unsigned int)cpu->regs[inst.rs2];
+            // SLTU
+            cpu->regs[inst.rd] = cpu->regs[inst.rs1] < cpu->regs[inst.rs2];
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b100) {
+            // XOR
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] ^ cpu->regs[inst.rs2];
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b101) {
             if (inst.funct7 == 0b0000000) {
+                // SRL
                 cpu->regs[inst.rd] = cpu->regs[inst.rs1] >> cpu->regs[inst.rs2];
                 cpu->pc += 4;
             }
             else if (inst.funct7 == 0b0100000) {
-                if (cpu->regs[inst.rs1] << 1 >> 1 != cpu->regs[inst.rs1]) {
-                    cpu->regs[inst.rd] = (cpu->regs[inst.rs1] >> cpu->regs[inst.rs2]) | (0xFFFFFFFF >> (cpu->regs[inst.rs2] - 1) << (cpu->regs[inst.rs2] - 1));
-                    cpu->pc += 4;
-                }
+                // SRA
+                cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] >> cpu->regs[inst.rs2];
+                cpu->pc += 4;
             }
         }
         else if (inst.funct3 == 0b110) {
+            // OR
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] | cpu->regs[inst.rs2];
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b111) {
+            // AND
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] & cpu->regs[inst.rs2];
             cpu->pc += 4;
         }
@@ -315,25 +318,55 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
     }
     else if (inst.type == ITYPE_I) {
         if (inst.funct3 == 0b000) {
+            // ADDI
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] + inst.imm;
             cpu->pc += 4;
         }
+        else if (inst.funct3 == 0b001) {
+            // SLL
+            cpu->regs[inst.rd] = cpu->regs[inst.rs1] << (inst.imm & 0b1111);
+            cpu->pc += 4;
+        }
         else if (inst.funct3 == 0b010) {
-            cpu->regs[inst.rd] = (signed int)cpu->regs[inst.rs1] < (signed int)inst.imm;
+            // SLTI
+            cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] < (int32_t)inst.imm;
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b011) {
-            cpu->regs[inst.rd] = (unsigned int)cpu->regs[inst.rs1] < (unsigned int)inst.imm;
+            // SLTIU
+            cpu->regs[inst.rd] = cpu->regs[inst.rs1] < inst.imm;
+            cpu->pc += 4;
+        }
+        else if (inst.funct3 == 0b101) {
+            if (inst.funct7 == 0b0000000) {
+                // SRLI
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] >> (inst.imm & 0b1111);
+                cpu->pc += 4;
+            }
+            else if (inst.funct7 == 0b0100000) {
+                // SRAI
+                cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] >> (inst.imm & 0b1111);
+                cpu->pc += 4;
+            }
+        }
+        else if (inst.funct3 == 0b100) {
+            // XORI
+            cpu->regs[inst.rd] = cpu->regs[inst.rs1] ^ inst.imm;
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b110) {
+            // ORI
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] | inst.imm;
             cpu->pc += 4;
         }
         else if (inst.funct3 == 0b111) {
+            // ANDI
             cpu->regs[inst.rd] = cpu->regs[inst.rs1] & inst.imm;
             cpu->pc += 4;
         }
+    }
+    else if (inst.type == ITYPE_J) {
+        //if (inst.funct3 == ) {}
     }
     return 0;
 }
@@ -358,7 +391,7 @@ uint32_t load_image(cpu_t* cpu, const char* filename) {
         c = fgetc(fp);
         if (c != EOF) {
             cpu->mem[k] = (uint8_t)c;
-            printf("%x ", cpu->mem[k], k);
+            //printf("%x ", cpu->mem[k]);
             k++;
         }
         else {
