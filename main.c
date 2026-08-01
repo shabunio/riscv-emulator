@@ -1,6 +1,6 @@
 /*
  *
- *  Single-file RISC-V Emulator
+ *  RISC-V Emulator
  *  Author:      Dzmitry Shabunio
  *  Year:        2026
  *  License:     MIT
