@@ -112,7 +112,8 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
         }
     }
     else if (inst.type == ITYPE_J) {
-        //if (inst.funct3 == ) {}
+        cpu->regs[inst.rd] = cpu->pc + 4;
+        cpu->pc += inst.imm;
     }
     return 0;
 }
@@ -126,24 +127,8 @@ void cpu_step(cpu_t* cpu) {
     }
 }
 
-uint32_t load_image(cpu_t* cpu, const char* filename) {
-    FILE* fp = fopen(filename, "rb");
-    if (fp == NULL) {
-        return -1;
-    }
-    uint32_t k = 0;
-    int c;
-    while (k < MEM_SIZE) {
-        c = fgetc(fp);
-        if (c != EOF) {
-            cpu->mem[k] = (uint8_t)c;
-            //printf("%x ", cpu->mem[k]);
-            k++;
-        }
-        else {
-            break;
-        }
-    }
-    fclose(fp);
-    return k;
+void cpu_free(cpu_t* cpu) {
+    free(cpu->mem);
+    free(cpu->regs);
+    free(cpu);
 }

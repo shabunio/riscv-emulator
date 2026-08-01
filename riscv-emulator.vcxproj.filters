@@ -13,27 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\src">
-      <UniqueIdentifier>{8d8e88ea-f58b-414d-96d7-74754c2af8a9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="logic.c">
-      <Filter>Source Files\src</Filter>
-    </ClCompile>
-    <ClCompile Include="parser.c">
-      <Filter>Source Files\src</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.c">
-      <Filter>Source Files\src</Filter>
+    <ClCompile Include="cpu.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
-      <Filter>Source Files\src</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="loader.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="riscv.h">
-      <Filter>Source Files\src</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

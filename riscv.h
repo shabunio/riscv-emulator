@@ -58,5 +58,7 @@ instr_t parse_inst(uint32_t x);
 instr_t fetch_inst(cpu_t* cpu);
 int execute_inst(cpu_t* cpu, instr_t inst);
 void cpu_step(cpu_t* cpu);
+void cpu_free(cpu_t* cpu);
+
 uint32_t load_image(cpu_t* cpu, const char* filename);
 

@@ -13,7 +13,12 @@
 
 int main(int argc, char* argv[]) {
     cpu_t* cpu = (cpu_t *)malloc(sizeof(cpu_t));
-    cpu->mem = (uint8_t *)calloc(MEM_SIZE, sizeof(uint8_t));
+    cpu->mem = calloc(MEM_SIZE, sizeof(uint8_t));
+    if (cpu->mem == NULL) {
+        printf("Memory allocation failed\n");
+        free(cpu);
+        exit(1);
+    }
     cpu->regs = calloc(32, sizeof(uint32_t));
     cpu->pc = 0;
     cpu->halt = 0;
@@ -33,11 +38,9 @@ int main(int argc, char* argv[]) {
         cpu_step(cpu);
         print_regs(cpu);
         if (cpu->halt) {
-            printf("Halt at pc=0x%x\n", cpu->pc);
+			cpu_halt(cpu);
             break;
         }
     }
-    free(cpu->mem);
-    free(cpu->regs);
-    free(cpu);
+    cpu_free(cpu);
 }
