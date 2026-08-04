@@ -63,57 +63,148 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
 
     }
     else if (inst.type == ITYPE_I) {
-        if (inst.funct3 == 0b000) {
-            // ADDI
-            cpu->regs[inst.rd] = cpu->regs[inst.rs1] + inst.imm;
-            cpu->pc += 4;
-        }
-        else if (inst.funct3 == 0b001) {
-            // SLL
-            cpu->regs[inst.rd] = cpu->regs[inst.rs1] << (inst.imm & 0b1111);
-            cpu->pc += 4;
-        }
-        else if (inst.funct3 == 0b010) {
-            // SLTI
-            cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] < (int32_t)inst.imm;
-            cpu->pc += 4;
-        }
-        else if (inst.funct3 == 0b011) {
-            // SLTIU
-            cpu->regs[inst.rd] = cpu->regs[inst.rs1] < inst.imm;
-            cpu->pc += 4;
-        }
-        else if (inst.funct3 == 0b101) {
-            if (inst.funct7 == 0b0000000) {
-                // SRLI
-                cpu->regs[inst.rd] = cpu->regs[inst.rs1] >> (inst.imm & 0b1111);
+        if (inst.opcode == 0b0010011) {
+            if (inst.funct3 == 0b000) {
+                // ADDI
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] + inst.imm;
                 cpu->pc += 4;
             }
-            else if (inst.funct7 == 0b0100000) {
-                // SRAI
-                cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] >> (inst.imm & 0b1111);
+            else if (inst.funct3 == 0b001) {
+                // SLL
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] << (inst.imm & 0b11111);
+                cpu->pc += 4;
+            }
+            else if (inst.funct3 == 0b010) {
+                // SLTI
+                cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] < (int32_t)inst.imm;
+                cpu->pc += 4;
+            }
+            else if (inst.funct3 == 0b011) {
+                // SLTIU
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] < inst.imm;
+                cpu->pc += 4;
+            }
+            else if (inst.funct3 == 0b101) {
+                if (inst.funct7 == 0b0000000) {
+                    // SRLI
+                    cpu->regs[inst.rd] = cpu->regs[inst.rs1] >> (inst.imm & 0b11111);
+                    cpu->pc += 4;
+                }
+                else if (inst.funct7 == 0b0100000) {
+                    // SRAI
+                    cpu->regs[inst.rd] = (int32_t)cpu->regs[inst.rs1] >> (inst.imm & 0b11111);
+                    cpu->pc += 4;
+                }
+            }
+            else if (inst.funct3 == 0b100) {
+                // XORI
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] ^ inst.imm;
+                cpu->pc += 4;
+            }
+            else if (inst.funct3 == 0b110) {
+                // ORI
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] | inst.imm;
+                cpu->pc += 4;
+            }
+            else if (inst.funct3 == 0b111) {
+                // ANDI
+                cpu->regs[inst.rd] = cpu->regs[inst.rs1] & inst.imm;
                 cpu->pc += 4;
             }
         }
-        else if (inst.funct3 == 0b100) {
-            // XORI
-            cpu->regs[inst.rd] = cpu->regs[inst.rs1] ^ inst.imm;
-            cpu->pc += 4;
+        else if (inst.opcode == 0b1100111) {
+            // JALR
+            cpu->regs[inst.rd] = cpu->pc + 4;
+            cpu->pc = (inst.imm + inst.rs1) & ~1;
         }
-        else if (inst.funct3 == 0b110) {
-            // ORI
-            cpu->regs[inst.rd] = cpu->regs[inst.rs1] | inst.imm;
-            cpu->pc += 4;
-        }
-        else if (inst.funct3 == 0b111) {
-            // ANDI
-            cpu->regs[inst.rd] = cpu->regs[inst.rs1] & inst.imm;
-            cpu->pc += 4;
+        else if (inst.opcode == 0b0000011) {
+            if (inst.funct3 == 0b000) {
+                // LB
+                uint32_t x = cpu->mem[inst.rs1 + inst.imm];
+                if (x >> 7) {
+                    x |= ~(uint32_t)0xFF;
+                }
+                cpu->regs[inst.rd] = x;
+            }
+            else if (inst.funct3 == 0b001) {
+                // LH
+                uint32_t x = cpu->mem[inst.rs1 + inst.imm] | cpu->mem[inst.rs1 + inst.imm + 1] << 8;
+                if (x >> 15) {
+                    x |= ~(uint32_t)0xFFFF;
+                }
+                cpu->regs[inst.rd] = x;
+            }
+            else if (inst.funct3 == 0b010) {
+                // LW
+                uint32_t x = cpu->mem[inst.rs1 + inst.imm] | cpu->mem[inst.rs1 + inst.imm + 1] << 8 | cpu->mem[inst.rs1 + inst.imm + 2] << 16 | cpu->mem[inst.rs1 + inst.imm + 3] << 24;
+                cpu->regs[inst.rd] = x;
+            }
+            if (inst.funct3 == 0b100) {
+                // LBU
+                uint32_t x = cpu->mem[inst.rs1 + inst.imm];
+                cpu->regs[inst.rd] = x;
+            }
+            else if (inst.funct3 == 0b101) {
+                // LHU
+                uint32_t x = cpu->mem[inst.rs1 + inst.imm] | cpu->mem[inst.rs1 + inst.imm + 1] << 8;
+                cpu->regs[inst.rd] = x;
+            }
         }
     }
     else if (inst.type == ITYPE_J) {
+        // JAL
         cpu->regs[inst.rd] = cpu->pc + 4;
         cpu->pc += inst.imm;
+    }
+    else if (inst.type == ITYPE_B) {
+        if (inst.opcode == 0b1100011) {
+            if (inst.funct3 == 0b000) {
+                // BEQ
+                if (cpu->regs[inst.rs1] == cpu->regs[inst.rs2]) {
+                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                }
+            }
+            else if (inst.funct3 == 0b001) {
+                // BNE
+                if (cpu->regs[inst.rs1] != cpu->regs[inst.rs2]) {
+                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                }
+            }
+            else if (inst.funct3 == 0b100) {
+                // BLT
+                if ((int32_t)cpu->regs[inst.rs1] < (int32_t)cpu->regs[inst.rs2]) {
+                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                }
+            }
+            else if (inst.funct3 == 0b101) {
+                // BGE
+                if ((int32_t)cpu->regs[inst.rs1] > (int32_t)cpu->regs[inst.rs2]) {
+                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                }
+            }
+            else if (inst.funct3 == 0b110) {
+                // BLTU
+                if (cpu->regs[inst.rs1] < cpu->regs[inst.rs2]) {
+                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                }
+            }
+            else if (inst.funct3 == 0b111) {
+                // BGEU
+                if (cpu->regs[inst.rs1] > cpu->regs[inst.rs2]) {
+                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                }
+            }
+        }
+    }
+    else if (inst.type == ITYPE_U) {
+        if (inst.opcode == 0b0110111) {
+            // LUI
+            cpu->regs[inst.rd] = inst.imm;
+        }
+        else if (inst.opcode == 0b0010111) {
+            // AUIPC
+            cpu->regs[inst.rd] = inst.imm + cpu->pc;
+        }
     }
     return 0;
 }
