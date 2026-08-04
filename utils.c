@@ -35,3 +35,9 @@ void print_regs(cpu_t* cpu) {
         printf("x%d=%x; ", i, cpu->regs[i]);
     printf("\n");
 }
+
+void cpu_halt(cpu_t* cpu) {
+    printf("CPU halted at PC=0x%x\n", cpu->pc);
+    cpu_free(cpu);
+	exit(1);
+}

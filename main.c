@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     cpu->pc = 0;
     cpu->halt = 0;
 
-    char* filename = "samples/prg_slt.bin";
+    char* filename = "samples/prg_j2.bin";
     if (argc > 1) {
         filename = argv[1];
     }
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    for (int i = 0; i < (k / 4); i++) {
+    for (int i = 0; i < (k); i++) {
         cpu_step(cpu);
         print_regs(cpu);
         if (cpu->halt) {
