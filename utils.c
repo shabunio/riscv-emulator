@@ -31,7 +31,7 @@ void print_raw_inst(instr_t current) {
 }
 
 void print_regs(cpu_t* cpu) {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 6; i++)
         printf("x%d=%x; ", i, cpu->regs[i]);
     printf("\n");
 }
