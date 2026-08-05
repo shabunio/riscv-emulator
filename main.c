@@ -23,7 +23,8 @@ int main(int argc, char* argv[]) {
     cpu->pc = 0;
     cpu->halt = 0;
 
-    char* filename = "samples/prg_j2.bin";
+    //char* filename = "samples/prg_all.bin";
+    char* filename = "samples/binary.dat";
     if (argc > 1) {
         filename = argv[1];
     }
@@ -34,13 +35,14 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    for (int i = 0; i < (k); i++) {
+    for (int i = 0; i < (k/4); i++) {
         cpu_step(cpu);
-        print_regs(cpu);
+        //print_regs(cpu);
         if (cpu->halt) {
 			cpu_halt(cpu);
             break;
         }
     }
+    print_regs(cpu);
     cpu_free(cpu);
 }

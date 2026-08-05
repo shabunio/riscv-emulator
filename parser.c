@@ -16,6 +16,7 @@ itype_t detect_type(uint32_t x) {
 
     case 0b0000011:
     case 0b0010011:
+    case 0b1100111:
     case 0b1110011: // ECALL opcode
     case 0b0001111: // FENCE opcode
         return ITYPE_I;
@@ -59,9 +60,9 @@ instr_t parse_i_type(uint32_t x) {
 }
 
 instr_t parse_s_type(uint32_t x) {
-    uint32_t imm = ((x >> 25 & 0b1111111) << 5) | (x >> 7 & 0b11111);
+    uint32_t imm = ((x >> 25 & 0b111111) << 5) | (x >> 7 & 0b11111);
     if (x >> 31)
-        imm |= 0xFFFFF800;
+        imm |= 0xFFFFF000;
 
     instr_t current = { 0 };
     current.type = ITYPE_S;
