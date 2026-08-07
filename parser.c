@@ -6,6 +6,7 @@ itype_t detect_type(uint32_t x) {
         return ITYPE_R;
 
     case 0b0010111:
+    case 0b0110111:
         return ITYPE_U;
 
     case 0b1100011:
@@ -45,7 +46,7 @@ instr_t parse_r_type(uint32_t x) {
 instr_t parse_i_type(uint32_t x) {
     uint32_t imm = x >> 20;
     if (imm >> 11)
-        imm |= 0xFFFFF800;
+        imm |= 0xFFFFF000;
 
     instr_t current = { 0 };
     current.type = ITYPE_I;
