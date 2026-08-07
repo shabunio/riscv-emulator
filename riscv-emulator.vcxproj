@@ -127,6 +127,7 @@
     <ClCompile Include="cpu.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="parser.c" />
+    <ClCompile Include="syscall.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>

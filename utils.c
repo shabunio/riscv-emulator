@@ -8,7 +8,7 @@ void print_raw_inst(instr_t current) {
     char c = '?';
     switch (current.type) {
     case ITYPE_B:
-        c = 'c'; break;
+        c = 'b'; break;
     case ITYPE_S:
         c = 's'; break;
     case ITYPE_R:
@@ -30,14 +30,14 @@ void print_raw_inst(instr_t current) {
     printf("imm=0x%x)", current.imm);
 }
 
-void print_regs(cpu_t* cpu) {
-    for (int i = 0; i < 6; i++)
-        printf("x%d=%x; ", i, cpu->regs[i]);
+void print_dec_regs(cpu_t* cpu) {
+    for (int i = 0; i < 32; i++)
+        printf("x%d=%d; ", i, cpu->regs[i]);
     printf("\n");
 }
 
-void cpu_halt(cpu_t* cpu) {
-    printf("CPU halted at PC=0x%x\n", cpu->pc);
-    cpu_free(cpu);
-	exit(1);
+void print_hex_regs(cpu_t* cpu) {
+    for (int i = 0; i < 32; i++)
+        printf("x%d=%x; ", i, cpu->regs[i]);
+    printf("\n");
 }
