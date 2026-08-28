@@ -18,7 +18,7 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
                 cpu->regs[inst.rd] = cpu->regs[inst.rs1] + cpu->regs[inst.rs2];
                 cpu->pc += 4;
             }
-            else if (inst.funct7 = 0b0100000) {
+            else if (inst.funct7 == 0b0100000) {
                 // SUB
                 cpu->regs[inst.rd] = cpu->regs[inst.rs1] - cpu->regs[inst.rs2];
                 cpu->pc += 4;
@@ -203,7 +203,7 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
             else if (inst.funct3 == 0b001) {
                 // BNE
                 if (cpu->regs[inst.rs1] != cpu->regs[inst.rs2]) {
-                    cpu->pc = (cpu->pc + inst.imm) &~(uint32_t)1;
+                    cpu->pc = (cpu->pc + inst.imm) & ~(uint32_t)1;
                 }
                 else {
                     cpu->pc += 4;
@@ -212,7 +212,7 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
             else if (inst.funct3 == 0b100) {
                 // BLT
                 if ((int32_t)cpu->regs[inst.rs1] < (int32_t)cpu->regs[inst.rs2]) {
-                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                    cpu->pc = (inst.imm + cpu->pc) & ~(uint32_t)1;
                 }
                 else {
                     cpu->pc += 4;
@@ -221,7 +221,7 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
             else if (inst.funct3 == 0b101) {
                 // BGE
                 if ((int32_t)cpu->regs[inst.rs1] >= (int32_t)cpu->regs[inst.rs2]) {
-                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                    cpu->pc = (inst.imm + cpu->pc) & ~(uint32_t)1;
                 }
                 else {
                     cpu->pc += 4;
@@ -230,7 +230,7 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
             else if (inst.funct3 == 0b110) {
                 // BLTU
                 if (cpu->regs[inst.rs1] < cpu->regs[inst.rs2]) {
-                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                    cpu->pc = (inst.imm + cpu->pc) & ~(uint32_t)1;
                 }
                 else {
                     cpu->pc += 4;
@@ -239,7 +239,7 @@ int execute_inst(cpu_t* cpu, instr_t inst) {
             else if (inst.funct3 == 0b111) {
                 // BGEU
                 if (cpu->regs[inst.rs1] >= cpu->regs[inst.rs2]) {
-                    cpu->pc = (inst.imm + cpu->pc) & ~1;
+                    cpu->pc = (inst.imm + cpu->pc) & ~(uint32_t)1;
                 }
                 else {
                     cpu->pc += 4;

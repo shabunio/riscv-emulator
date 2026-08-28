@@ -22,14 +22,12 @@ int main(int argc, char* argv[]) {
     cpu->regs = calloc(32, sizeof(uint32_t));
     cpu->pc = 0;
     cpu->e = 0;
-
-//    char* filename = "samples/prg_all.bin";
-    char* filename = "samples/binary.dat";
+    char* filename = "binary.dat";
     if (argc > 1) {
         filename = argv[1];
     }
 
-    uint32_t k = load_image(cpu, filename);
+    long k = load_image(cpu, filename);
     if (k == -1) {
         printf("Image loading failed\n");
         exit(1);
@@ -37,7 +35,6 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < (k/4); i++) {
         cpu_step(cpu);
-        //print_regs(cpu);
         if (cpu->e == 1) {
 			cpu_halt(cpu);
             break;

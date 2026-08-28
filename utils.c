@@ -19,6 +19,7 @@ void print_raw_inst(instr_t current) {
         c = 'u'; break;
     case ITYPE_J:
         c = 'j'; break;
+    case ITYPE_NULL: break;
     }
     printf("inst(type=%c; ", c);
     printf("op=0x%x; ", current.opcode);
@@ -38,6 +39,6 @@ void print_dec_regs(cpu_t* cpu) {
 
 void print_hex_regs(cpu_t* cpu) {
     for (int i = 0; i < 32; i++)
-        printf("x%d=%x; ", i, cpu->regs[i]);
+        printf("x%d=0x%x; ", i, cpu->regs[i]);
     printf("\n");
 }

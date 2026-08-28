@@ -41,7 +41,9 @@ typedef struct {
 
 uint32_t convert_bytes_to_uint32_t(uint8_t* x);
 void print_raw_inst(instr_t current);
-void print_regs(cpu_t* cpu);
+//void print_regs(cpu_t* cpu);
+void print_hex_regs(cpu_t* cpu);
+void print_dec_regs(cpu_t* cpu);
 void cpu_halt(cpu_t* cpu);
 void cpu_ebreak(cpu_t* cpu);
 
@@ -56,11 +58,11 @@ instr_t parse_u_type(uint32_t x);
 instr_t parse_inst(uint32_t x);
 
 
-instr_t fetch_inst(cpu_t* cpu);
+static inline instr_t  fetch_inst(cpu_t* cpu);
 void cpu_ecall(cpu_t* cpu);
 int execute_inst(cpu_t* cpu, instr_t inst);
 void cpu_step(cpu_t* cpu);
 void cpu_free(cpu_t* cpu);
 
-uint32_t load_image(cpu_t* cpu, const char* filename);
+long load_image(cpu_t* cpu, const char* filename);
 
